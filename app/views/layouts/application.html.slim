@@ -17,7 +17,9 @@ html
     footer
       .container
         p.columns.six Upload a file (up to 10 MB) or write a message. Send the link to a friend. As soon as they view the link, it will be completely destroyed: the entry will be removed from the database, the file will be erased, and the link will become invalid.
-        p.columns.six.offset-by-four Copyright &copy; #{Date.today.year} BurnBox
+        p.columns.six.offset-by-four
+          | Copyright &copy; #{Date.today.year}
+          a< href="https://github.com/thingssimple/burnbox" BurnBox
 
     = javascript_include_tag "application", "data-turbolinks-track" => true
     javascript:
