@@ -1,0 +1,285 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the top of the
+ * compiled file, but it's generally better to create a new file per style scope.
+ *
+ *= require skeleton/base
+ *= require skeleton/skeleton
+ *= require skeleton/layout
+ *= require_self
+ */
+
+$dark-grey: #282828;
+$grey: #3e3e3e;
+$light-grey: #8b8b8b;
+$white: #f2f2f2;
+$blue: #243640;
+$red: #e84d5b;
+
+$base-font-size: 16px;
+$grid-height: $base-font-size * 1.5;
+$border-height: 4px;
+
+@font-face {
+  font-family: "glyphicons";
+  src: font-url("glyphicons-halflings-regular.woff") format("woff");
+}
+
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+  -moz-border-radius: $radius;
+  -ms-border-radius: $radius;
+  -o-border-radius: $radius;
+  border-radius: $radius;
+}
+
+@mixin fade($seconds) {
+  -webkit-transition: all $seconds ease-in-out;
+  -moz-transition: all $seconds ease-in-out;
+  -o-transition: all $seconds ease-in-out;
+  transition: all $seconds ease-in-out;
+}
+
+@mixin reset-shadow {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  -ms-box-shadow: none;
+  -o-box-shadow: none;
+  box-shadow: none;
+}
+
+.upload-icon {
+  &:before {
+    content: "\e198";
+    font: {
+      family: "glyphicons";
+    }
+  }
+}
+
+body, h1, h2, h3, h4, h5, h6 {
+  font-family: "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: $dark-grey;
+}
+
+html, body {
+  background: $white;
+  font-size: $base-font-size;
+  height: 100%;
+}
+
+body {
+  padding-top: $grid-height * 2;
+}
+
+body > .container {
+  min-height: 75%;
+}
+
+p {
+  line-height: $grid-height;
+  margin-bottom: $grid-height;
+}
+
+a, a:visited {
+  text-decoration: none;
+  color: $light-grey;
+
+  &:hover {
+    color: $grey;
+  }
+}
+
+h1 {
+  font-family: Courier, monospace;
+  font-size: $grid-height * 2;
+  line-height: $grid-height * 2;
+  margin-bottom: $grid-height * 2;
+  text-align: center;
+
+  & a, & a:visited {
+    color: $dark-grey;
+  }
+
+  &:before {
+    font-family: "glyphicons";
+    content: "\e104";
+    color: $red;
+    position: absolute;
+    margin: {
+      left: -1.15em;
+    }
+  }
+}
+
+.show h1 {
+  font-size: $base-font-size;
+  line-height: $grid-height;
+  text-align: right;
+}
+
+#drop-zone {
+  position: relative;
+  width: 98.5%;
+  padding: {
+    left: 0.25em;
+  }
+  border: $border-height dashed $light-grey;
+  margin-bottom: $grid-height;
+  text-align: center;
+  overflow: hidden;
+
+  .icon {
+    font-size: $grid-height * 2;
+    font-weight: bold;
+    line-height: ($grid-height * 8) - ($border-height * 2);
+    color: $light-grey;
+  }
+
+  input {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 1000%;
+    height: 100%;
+    cursor: pointer;
+  }
+}
+
+textarea {
+  font-size: $base-font-size;
+  color: $grey;
+  margin: {
+    bottom: $grid-height;
+  }
+
+  width: 100%;
+  height: $grid-height;
+  min-height: $grid-height;
+  background: $white;
+  padding: 0;
+
+  border: none;
+
+  &:focus {
+    color: $grey;
+    border: none;
+    outline: 0;
+    @include reset-shadow;
+  }
+
+  &::-webkit-input-placeholder {
+    color: $light-grey;
+    font-style: italic;
+  }
+
+  &:-moz-placeholder {
+    color: $light-grey;
+    font-style: italic;
+  }
+
+  &::-moz-placeholder {
+    color: $light-grey;
+    font-style: italic;
+  }
+
+  &:-ms-input-placeholder {
+    color: $light-grey;
+    font-style: italic;
+  }
+}
+
+.form-group + .columns {
+  text-align: right;
+  line-height: $grid-height * 2;
+}
+
+#markdown svg {
+  width: 20%;
+  height: 20%;
+}
+
+form {
+  margin-bottom: $grid-height * 2;
+}
+
+input[type="submit"] {
+  background: $grey;
+  border: none;
+  color: $white;
+  text-shadow: none;
+  width: 100%;
+  font: {
+    size: $base-font-size;
+    weight: lighter;
+  }
+  height: $grid-height * 2;
+  margin-bottom: $grid-height * 2;
+  text-transform: uppercase;
+
+  &:hover {
+    background: $dark-grey;
+    border: none;
+    color: $white;
+  }
+}
+
+input[name="link"] {
+  width: 100%;
+}
+
+pre {
+  border: 1px solid $light-grey;
+  padding: $base-font-size;
+  margin-bottom: $grid-height;
+  @include border-radius(2px);
+}
+
+pre, input[type="text"] {
+  font-family: Courier, monospace;
+}
+
+footer {
+  position: relative;
+  background: $blue;
+  color: $white;
+  padding: {
+    top: $grid-height * 2;
+    bottom: $grid-height;
+  }
+}
+
+.alert {
+  padding: {
+    left: 1em;
+  }
+  color: $white;
+  background: $red;
+
+  &:before {
+    font: {
+      family: "glyphicons";
+      size: 75%;
+    }
+    content: "\e020";
+    margin-right: 0.5em;
+  }
+}
+
+.error {
+  @extend .alert;
+
+  &:before {
+    font: {
+      size: 100%;
+      weight: bold;
+      family: "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+    content: "!";
+  }
+}

@@ -1,0 +1,30 @@
+doctype html
+html
+  head
+    title BurnBox
+    = stylesheet_link_tag "application", media: "all", "data-turbolinks-track" => true
+    /[if lt IE 9]
+      script src="http://html5shim.googlecode.com/svn/trunk/html5.js"
+    = csrf_meta_tags
+    = yield :head
+
+  body class=controller.action_name
+    .container
+      h1
+        a href="/" BurnBox
+      = yield
+
+    footer
+      .container
+        p.columns.six Upload a file (up to 10 MB) or write a message. Send the link to a friend. As soon as they view the link, it will be completely destroyed: the entry will be removed from the database, the file will be erased, and the link will become invalid.
+        p.columns.six.offset-by-four Copyright &copy; #{Date.today.year} BurnBox
+
+    = javascript_include_tag "application", "data-turbolinks-track" => true
+    javascript:
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-890295-7', 'burnbox.io');
+      ga('send', 'pageview');

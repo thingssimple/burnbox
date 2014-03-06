@@ -1,0 +1,32 @@
+- if @message.errors.any?
+  - @message.errors.full_messages.each do |msg|
+    p.error= msg
+= form_for @message, html: { role: "form", multipart: true } do |f|
+  #drop-zone
+    span.icon.upload-icon
+    .form-group= f.file_field :file
+  .form-group= f.text_area :text, placeholder: "Type a message here"
+  .form-group= f.submit "Upload"
+
+coffee:
+  MAX_FILE_SIZE = 10485760
+  input = document.querySelector "#drop-zone input"
+  input.onchange = ->
+    val = this.value.replace("C:\\fakepath\\", "")
+    container = document.querySelector "#drop-zone span"
+    container.classList.remove "upload-icon"
+    container.innerHTML = val
+
+  document.querySelector("form").onsubmit = (event) ->
+    fileInput = document.querySelector "#drop-zone input"
+    if fileInput.files[0].size > MAX_FILE_SIZE
+      this.insertAdjacentHTML "beforebegin", "<p class='error'>File must be below 10 MB</p>"
+      event.preventDefault
+      return false
+
+  textarea = document.querySelector "textarea"
+  heightLimit = 200
+
+  textarea.oninput = ->
+    textarea.style.height = ""
+    textarea.style.height = textarea.scrollHeight + "px"
