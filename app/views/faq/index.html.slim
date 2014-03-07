@@ -1,0 +1,19 @@
+h2 Frequently Asked Questions
+h3 Why?
+markdown:
+  One of the creators was applying for a mortgage and needed to send sensitive documents to a lending agent. He didn't want to e-mail these files as attachments that would live forever on the agent's mail server. The best he could come up with was to upload them to a public DropBox folder and ask the agent to let him know when they downloaded them so he could immediately delete them.
+
+  BurnBox is a way to automate this process.
+h3 How do I know that my message has been deleted?
+markdown:
+  The moment a message is viewed, it is loaded into memory from the database and file system, destroyed from the database and file system, and served from memory ([source](https://github.com/thingssimple/burnbox/blob/master/app/controllers/messages_controller.rb)).
+h3 Isn't this inefficient?
+markdown:
+  It is. Efficiency is being sacrificed for assurance.
+
+  We could, for instance, use S3 and CloudFront to store and serve the files. But that means unknown copies of your files on the S3 and CloudFront servers. And file deletes are issued through an API call, which is undoubtedly queued on the Amazon side and processed at a later time.
+
+  Errors can happen during file download--lost Internet connection, closed browser, etc.--but we'd rather go through the simple process of recreating the message than think that our messages are hanging around on a server. The most important thing is that messages are deleted, forever, from BurnBox.
+h3 Why no encryption?
+markdown:
+  We may add encryption later when we come up with a good user experience for it. In the meantime, there's nothing stopping you from encrypting messages yourself before uploading to BurnBox.
