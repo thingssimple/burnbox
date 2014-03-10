@@ -4,6 +4,10 @@ html
     title BurnBox
     = stylesheet_link_tag "application", media: "all", "data-turbolinks-track" => true
     = favicon_link_tag "favicon.ico"
+    = favicon_link_tag "apple-touch-icon-144x144-precomposed.png", rel: "apple-touch-icon-precomposed", sizes: "144x144", type: "image/png"
+    = favicon_link_tag "apple-touch-icon-114x114-precomposed.png", rel: "apple-touch-icon-precomposed", sizes: "114x114", type: "image/png"
+    = favicon_link_tag "apple-touch-icon-72x72-precomposed.png", rel: "apple-touch-icon-precomposed", sizes: "72x72", type: "image/png"
+    = favicon_link_tag "apple-touch-icon-precomposed.png", rel: "apple-touch-icon-precomposed", type: "image/png"
     /[if lt IE 9]
       script src="http://html5shim.googlecode.com/svn/trunk/html5.js"
     = csrf_meta_tags
