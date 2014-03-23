@@ -52,6 +52,8 @@ gem 'dotenv-rails', :groups => [:development, :test]
 group :production do
   gem 'pg'
   gem 'rails_12factor'
+  gem 'puma'
+  gem 'therubyracer'
 end
 
 # Use ActiveModel has_secure_password
