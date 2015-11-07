@@ -3,6 +3,6 @@ article
 p.alert
   small This message has been deleted
 
-- if @message.file?
+- if @message.file_content?
   - content_for :head do
     meta http-equiv="refresh" content="1;url=#{download_url(@message.slug)}"
