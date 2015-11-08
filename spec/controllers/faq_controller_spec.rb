@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe FaqController do
   it "renders the index action" do

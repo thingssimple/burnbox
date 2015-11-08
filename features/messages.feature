@@ -9,7 +9,7 @@ Feature: Messages
     Given a message
     When I go to that message's page
     Then I should see the message
-    And the message should deleted
+      And the message should deleted
 
   Scenario: Upload a file
     Given I am on the homepage
@@ -20,4 +20,4 @@ Feature: Messages
     Given a message with a file
     When I go to that message's page
     Then I should see the file
-    And the file should deleted
+      And the file should deleted

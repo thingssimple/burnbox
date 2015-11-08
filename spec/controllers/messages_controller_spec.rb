@@ -1,86 +1,77 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe MessagesController do
-  let(:message) { mock_model(Message).as_null_object }
+  let(:message) { Message.new(id: 1) }
 
   it "assigns a new message" do
-    Message.should_receive(:new).and_return message
-
     get :new
 
-    expect(assigns :message).to eq(message)
+    expect(assigns(:message)).to_not be_nil
   end
 
   describe "creating a message" do
-    it "creates a new text message" do
-      Message.should_receive(:new).with("text" => "This is a test").and_return message
-      message.should_receive(:save).and_return true
+    it "renders the create template when the message is valid" do
+      expect_any_instance_of(Message).to receive(:save) { true }
 
       post :create, message: { text: "This is a test" }
 
       expect(response).to render_template(:create)
     end
 
-    it "creates a new file message" do
-      Message.should_receive(:new).with("file" => "foo bar").and_return message
-      message.should_receive(:save).and_return true
+    it "renders the new template when the message is invalid" do
+      expect_any_instance_of(Message).to receive(:save) { false }
 
-      post :create, message: { file: "foo bar" }
-
-      expect(response).to render_template(:create)
-    end
-
-    it "rejects POSTs with no data" do
       post :create, message: {text: ""}
 
       expect(response).to render_template(:new)
     end
+
+    it "returns the new action when there's a problem saving the record" do
+      expect{post :create}.to raise_error ActionController::ParameterMissing
+    end
   end
 
-  it "returns the new action when there's a problem saving the record" do
-    expect{post :create}.to raise_error ActionController::ParameterMissing
+  describe "showing messages" do
+    before do
+      allow(Message).to receive(:find_by!).with(slug: "1") { message }
+    end
+
+    it "shows an existing message" do
+      get :show, slug: "1"
+
+      expect(assigns :message).to eq message
+    end
+
+    it "deletes a message after it's been viewed" do
+      allow(message).to receive(:file?) { false }
+      expect(message).to receive(:destroy)
+
+      get :show, slug: "1"
+    end
+
+    it "doesn't delete messages with files after rendering" do
+      allow(message).to receive(:file?) { true }
+      expect(message).to_not receive(:destroy)
+
+      get :show, slug: "1"
+    end
   end
 
-  it "shows the link after a successful create" do
-    post :create, message: { text: "This is a test" }
+  describe "downloading a file" do
+    before do
+      allow(Message).to receive(:find_by!).with(slug: "1") { message }
+    end
 
-    expect(response).to render_template(:create)
-  end
+    it "sends a file" do
+      allow(message).to receive_message_chain(:file, :path) { "/a/b/c" }
+      allow(message).to receive_message_chain(:file, :content_type) { "foo/bar" }
+      allow(message).to receive_message_chain(:file, :file_name) { "foo.bar" }
+      allow(File).to receive_message_chain(:open, :read) { "foo bar" }
+      expect(controller).to receive(:send_data).with("foo bar", type: "foo/bar", filename: "foo.bar")
+      expect(message).to receive(:destroy)
 
-  it "shows an existing message" do
-    Message.stub(:find_by!).with(slug: "1").and_return message
-
-    get :show, slug: "1"
-
-    expect(assigns :message).to eq message
-  end
-
-  it "deletes a message after it's been viewed" do
-    Message.stub(:find_by!).with(slug: "1").and_return message
-    message.stub(:file?).and_return false
-    message.should_receive(:destroy)
-
-    get :show, slug: "1"
-  end
-
-  it "doesn't delete messages with files after rendering" do
-    Message.stub(:find_by!).with(slug: "1").and_return message
-    message.stub(:file?).and_return true
-    message.should_not_receive(:destroy)
-
-    get :show, slug: "1"
-  end
-
-  it "sends a file" do
-    Message.stub(:find_by!).with(slug: "1").and_return message
-    message.stub_chain(:file, :path).and_return "/a/b/c"
-    message.stub_chain(:file, :content_type).and_return "foo/bar"
-    message.stub(:file_file_name).and_return "foo.bar"
-    File.stub_chain(:open, :read).and_return "foo bar"
-    controller.should_receive(:send_data).with("foo bar", type: "foo/bar", filename: "foo.bar")
-    message.should_receive(:destroy)
-
-    # the view throws an error because we stub out send_file
-    expect{ get :download, slug: "1"}.to raise_error ActionView::MissingTemplate 
+      # the view throws an error because we stub out send_file
+      expect{ get :download, slug: "1"}.to raise_error ActionView::MissingTemplate 
+    end
   end
 end
