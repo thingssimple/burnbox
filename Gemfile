@@ -44,6 +44,7 @@ group :doc do
 end
 
 group :test do
+  gem 'test-unit'
   gem "cucumber-rails", :require => false
   gem "database_cleaner"
   gem "rspec-rails"

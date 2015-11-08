@@ -13,7 +13,10 @@ describe MessagesController do
 
   describe "creating a message" do
     it "creates a new text message" do
-      Message.should_receive(:new).with("text" => "This is a test").and_return message
+      Base64.stub(:encode64).and_return "This is a test"
+      Message.should_receive(:new).with(
+        :text => "This is a test",
+      ).and_return message
       message.should_receive(:save).and_return true
 
       post :create, message: { text: "This is a test" }
@@ -22,18 +25,20 @@ describe MessagesController do
     end
 
     it "creates a new file message" do
-      Message.should_receive(:new).with("file" => "foo bar").and_return message
+      Base64.stub(:encode64).and_return "foo bar"
+      Message.should_receive(:new)
+        .with(
+          :text           => "foo bar",
+          :file_content   => "foo bar",
+          :file_type      => "text/plain",
+          :file_extension => "txt"
+        )
+        .and_return message
       message.should_receive(:save).and_return true
 
-      post :create, message: { file: "foo bar" }
+      post :create, message: { file: fixture_file_upload('files/barfoo.txt', 'text/plain') }
 
       expect(response).to render_template(:create)
-    end
-
-    it "rejects POSTs with no data" do
-      post :create, message: {text: ""}
-
-      expect(response).to render_template(:new)
     end
   end
 
@@ -48,6 +53,7 @@ describe MessagesController do
   end
 
   it "shows an existing message" do
+    allow(controller).to receive(:verify)
     Message.stub(:find_by!).with(slug: "1").and_return message
 
     get :show, slug: "1"
@@ -56,14 +62,16 @@ describe MessagesController do
   end
 
   it "deletes a message after it's been viewed" do
+    allow(controller).to receive(:verify)
     Message.stub(:find_by!).with(slug: "1").and_return message
-    message.stub(:file?).and_return false
+    message.stub(:file_content?).and_return nil
     message.should_receive(:destroy)
 
     get :show, slug: "1"
   end
 
   it "doesn't delete messages with files after rendering" do
+    allow(controller).to receive(:verify)
     Message.stub(:find_by!).with(slug: "1").and_return message
     message.stub(:file?).and_return true
     message.should_not_receive(:destroy)
@@ -72,12 +80,12 @@ describe MessagesController do
   end
 
   it "sends a file" do
+    allow(controller).to receive(:verify) { "foo bar" }
     Message.stub(:find_by!).with(slug: "1").and_return message
-    message.stub_chain(:file, :path).and_return "/a/b/c"
-    message.stub_chain(:file, :content_type).and_return "foo/bar"
-    message.stub(:file_file_name).and_return "foo.bar"
-    File.stub_chain(:open, :read).and_return "foo bar"
-    controller.should_receive(:send_data).with("foo bar", type: "foo/bar", filename: "foo.bar")
+    message.stub(:slug).and_return "1"
+    message.stub(:file_type).and_return "foo/bar"
+    message.stub(:file_extension).and_return "bar"
+    controller.should_receive(:send_data).with("foo bar", type: "foo/bar", filename: "1.bar")
     message.should_receive(:destroy)
 
     # the view throws an error because we stub out send_file
