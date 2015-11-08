@@ -11,15 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140226151415) do
+ActiveRecord::Schema.define(version: 20151107084823) do
 
   create_table "messages", force: true do |t|
-    t.string   "text"
-    t.string   "slug"
-    t.string   "file_file_name"
-    t.string   "file_content_type"
-    t.integer  "file_file_size"
-    t.datetime "file_updated_at"
+    t.string "text"
+    t.string "slug"
+    t.text   "file_content"
+    t.string "file_type"
+    t.string "file_extension"
   end
 
 end

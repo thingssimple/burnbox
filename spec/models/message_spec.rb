@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe Message do
-  it { should validate_attachment_size(:file).less_than(Message::MAX_FILE_SIZE) }
-
   it "sets a slug" do
     message = Message.new.set_slug "abc", 1
 
@@ -14,11 +12,5 @@ describe Message do
     message.should_receive(:set_slug)
 
     message.save
-  end
-
-  it "validates that at either text or file are present" do
-    expect(Message.new text: "test").to be_valid
-    expect(Message.new file: StringIO.new("foo bar")).to be_valid
-    expect(Message.new).to_not be_valid
   end
 end

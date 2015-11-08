@@ -6,7 +6,8 @@ Feature: Messages
     Then I should see the message URL
 
   Scenario: View a message
-    Given a message
+    Given I am on the homepage
+    And I create a message
     When I go to that message's page
     Then I should see the message
     And the message should deleted
@@ -17,7 +18,8 @@ Feature: Messages
     Then the message should have a file
 
   Scenario: Download a file
-    Given a message with a file
+    Given I am on the homepage
+    And I create a message with a file
     When I go to that message's page
     Then I should see the file
     And the file should deleted

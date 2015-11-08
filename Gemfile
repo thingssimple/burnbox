@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.1.0'
+ruby '2.2.3'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.3'
@@ -36,12 +36,15 @@ gem 'jbuilder', '~> 1.2'
 # Paperclip for file uploads
 gem 'paperclip', '~> 4.1'
 
+gem 'gpgme'
+
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
 end
 
 group :test do
+  gem 'test-unit'
   gem "cucumber-rails", :require => false
   gem "database_cleaner"
   gem "rspec-rails"
