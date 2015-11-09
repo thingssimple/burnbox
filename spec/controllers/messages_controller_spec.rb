@@ -58,7 +58,7 @@ describe MessagesController do
   end
 
   describe "downloading a file" do
-    let(:message) { Message.new(id: 1, file_contents: "secret message", file_extension: "txt", slug: "123") }
+    let(:message) { Message.new(id: 1, file_contents: "c2VjcmV0IG1lc3NhZ2U=\n", file_extension: "txt", slug: "123") }
 
     before do
       allow(Message).to receive(:find_by!).with(slug: "1") { message }
