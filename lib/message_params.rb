@@ -8,7 +8,7 @@ class MessageParams
     unless file.nil?
       {
         file_contents: file.read,
-        file_extension: file.original_filename.split(".").last,
+        file_extension: File.extname(file.original_filename).sub(".", ""),
       }
     else
       {}
