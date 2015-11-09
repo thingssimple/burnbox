@@ -1,10 +1,13 @@
+require "message_params"
+
 class MessagesController < ApplicationController
   def new
     @message = Message.new
   end
 
   def create
-    @message = Message.new message_params
+    @message = Message.new(message_params)
+
     if @message.save
       render :create
     else
@@ -14,21 +17,22 @@ class MessagesController < ApplicationController
 
   def show
     @message = Message.find_by! slug: params[:slug]
-    if not @message.file?
+    if @message.file_contents.nil?
       @message.destroy
     end
   end
 
   def download
     @message = Message.find_by! slug: params[:slug]
-    data = File.open(@message.file.path).read
-    content_type = @message.file.content_type
-    filename = @message.file.file_name
     @message.destroy
-    send_data data, type: content_type, filename: filename
+    send_data(
+      @message.read_file,
+      type: @message.file_mime_type,
+      filename: @message.file_name,
+    )
   end
 
   def message_params
-    params.require(:message).permit(:text, :file)
+    MessageParams.generate(params.require(:message).permit(:text, :file))
   end
 end

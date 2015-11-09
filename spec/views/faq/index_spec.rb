@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe "faq/index" do
   it "has a new message form" do

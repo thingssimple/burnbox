@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe "messages/new" do
   it "has a new message form" do

@@ -1,8 +1,6 @@
 require "rails_helper"
 
 describe Message do
-  it { should validate_attachment_size(:file).less_than(Message::MAX_FILE_SIZE) }
-
   it "sets a slug" do
     message = Message.new.set_slug "abc", 1
 
@@ -16,9 +14,38 @@ describe Message do
     message.save
   end
 
+  it "does not set the file contents when nil" do
+    message = Message.new(text: "test")
+    expect(message).to_not receive(:set_file_contents)
+
+    message.save
+  end
+
+  it "sets the file contents on save" do
+    message = Message.new(file_contents: "foo bar")
+    expect(message).to receive(:set_file_contents)
+
+    message.save
+  end
+
   it "validates that at either text or file are present" do
     expect(Message.new text: "test").to be_valid
-    expect(Message.new file: StringIO.new("foo bar")).to be_valid
+    expect(Message.new file_contents: "foo bar").to be_valid
     expect(Message.new).to_not be_valid
+  end
+
+  it "decodes its contents" do
+    expect(Message.new(file_contents: "Zm9vIGJhcg==\n").read_file).to eq "foo bar"
+  end
+
+  it "determines its mime type" do
+    expect(Message.new(file_extension: "txt").file_mime_type).to eq "text/plain"
+  end
+
+  it "generates a filename from the slug and extension" do
+    message = Message.new(file_extension: "txt")
+    message.set_slug("abc", 1)
+
+    expect(message.file_name).to eq "7faac3319aba94a00596f1e271d9da82.txt"
   end
 end
