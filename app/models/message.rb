@@ -1,5 +1,6 @@
 class Message < ActiveRecord::Base
   MAX_FILE_SIZE = 10.megabytes
+  attr_accessor :file_file_size, :file_file_name
 
   has_attached_file :file
   validates_attachment_size :file, in: 0..MAX_FILE_SIZE

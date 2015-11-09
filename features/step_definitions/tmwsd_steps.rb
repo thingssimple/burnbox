@@ -53,8 +53,5 @@ When /^I create a message with a file$/ do
 end
 
 Then /^the message should have a file$/ do
-  message = Message.where("file_file_name IS NOT NULL").first
-  expect(message).to_not be_nil
-  message.file = nil
-  message.save
+  expect(Message.first.file).to_not be_nil
 end

@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe Message do
   it { should validate_attachment_size(:file).less_than(Message::MAX_FILE_SIZE) }
@@ -11,7 +11,7 @@ describe Message do
 
   it "sets the slug on save" do
     message = Message.new text: "test"
-    message.should_receive(:set_slug)
+    expect(message).to receive(:set_slug)
 
     message.save
   end

@@ -23,7 +23,7 @@ class MessagesController < ApplicationController
     @message = Message.find_by! slug: params[:slug]
     data = File.open(@message.file.path).read
     content_type = @message.file.content_type
-    filename = @message.file_file_name
+    filename = @message.file.file_name
     @message.destroy
     send_data data, type: content_type, filename: filename
   end
