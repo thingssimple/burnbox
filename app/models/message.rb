@@ -1,10 +1,4 @@
 class Message < ActiveRecord::Base
-  MAX_FILE_SIZE = 10.megabytes
-  attr_accessor :file_file_size, :file_file_name
-
-  has_attached_file :file
-  validates_attachment_size :file, in: 0..MAX_FILE_SIZE
-  do_not_validate_attachment_file_type :file
   validate :has_text_or_file?
 
   before_save :set_slug
@@ -15,7 +9,7 @@ class Message < ActiveRecord::Base
   end
 
   def has_text_or_file?
-    if [text, file].all?{ |attr| attr.blank? }
+    if [text, file_contents].all?{ |attr| attr.blank? }
       errors[:base] << "Either file or text are required"
     end
   end

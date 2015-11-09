@@ -8,9 +8,7 @@ Given /^a message$/ do
 end
 
 Given /^a message with a file$/ do
-  file = File.open Rails.root.join("features", "fixtures", "upload.txt")
-  @message = Message.create! file: file
-  @file_path = @message.file.path
+  @message = Message.create! file_contents: "some test", file_extension: "txt"
 end
 
 When /^I create a message$/ do
@@ -35,12 +33,7 @@ Then /^I should see the file$/ do
 end
 
 Then /^the message should deleted$/ do
-  expect(Message.where @message.id).to be_empty
-end
-
-Then /^the file should deleted$/ do
-  expect(Message.where @message.id).to be_empty
-  File.delete(@file_path)
+  expect(Message.where(id: @message.id)).to be_empty
 end
 
 Then /^I should see the message URL$/ do
@@ -53,5 +46,5 @@ When /^I create a message with a file$/ do
 end
 
 Then /^the message should have a file$/ do
-  expect(Message.first.file).to_not be_nil
+  expect(Message.first.file_contents).to_not be_nil
 end

@@ -1,8 +1,6 @@
 require "rails_helper"
 
 describe MessagesController do
-  let(:message) { Message.new(id: 1) }
-
   it "assigns a new message" do
     get :new
 
@@ -32,6 +30,8 @@ describe MessagesController do
   end
 
   describe "showing messages" do
+    let(:message) { Message.new(id: 1, text: "secret message") }
+
     before do
       allow(Message).to receive(:find_by!).with(slug: "1") { message }
     end
@@ -43,14 +43,14 @@ describe MessagesController do
     end
 
     it "deletes a message after it's been viewed" do
-      allow(message).to receive(:file?) { false }
+      allow(message).to receive(:file_contents) { nil }
       expect(message).to receive(:destroy)
 
       get :show, slug: "1"
     end
 
     it "doesn't delete messages with files after rendering" do
-      allow(message).to receive(:file?) { true }
+      allow(message).to receive(:file_contents) { "foo" }
       expect(message).to_not receive(:destroy)
 
       get :show, slug: "1"
@@ -58,16 +58,14 @@ describe MessagesController do
   end
 
   describe "downloading a file" do
+    let(:message) { Message.new(id: 1, file_contents: "secret message", file_extension: "txt", slug: "123") }
+
     before do
       allow(Message).to receive(:find_by!).with(slug: "1") { message }
     end
 
     it "sends a file" do
-      allow(message).to receive_message_chain(:file, :path) { "/a/b/c" }
-      allow(message).to receive_message_chain(:file, :content_type) { "foo/bar" }
-      allow(message).to receive_message_chain(:file, :file_name) { "foo.bar" }
-      allow(File).to receive_message_chain(:open, :read) { "foo bar" }
-      expect(controller).to receive(:send_data).with("foo bar", type: "foo/bar", filename: "foo.bar")
+      expect(controller).to receive(:send_data).with("secret message", type: "text/plain", filename: "123.txt")
       expect(message).to receive(:destroy)
 
       # the view throws an error because we stub out send_file

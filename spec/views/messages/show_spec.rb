@@ -1,7 +1,7 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe "messages/show" do
-  let(:message) { Message.new text: "This is a test" }
+  let(:message) { Message.new(id: 1, text: "This is a test") }
 
   before do
     message.set_slug
@@ -23,7 +23,7 @@ describe "messages/show" do
   end
 
   context "when the message has a file" do
-    let(:message) { Message.new file_file_name: "foo bar" }
+    let(:message) { Message.new(id: 2, file_contents: "foo bar") }
 
     it "inserts the meta tag if the message has a file" do
       expect(view.content_for(:head)).to include(download_url(message.slug))

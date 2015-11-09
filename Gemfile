@@ -5,8 +5,8 @@ ruby "2.2.3"
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem "rails", "4.2.4"
 
-# Use sqlite3 as the database for Active Record in development
-gem "sqlite3", group: :development
+# Use PostgreSQL as the database for Active Record
+gem "pg"
 
 # Use SCSS for stylesheets
 gem "sass-rails", "~> 5.0.0"
@@ -33,9 +33,6 @@ gem "turbolinks"
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem "jbuilder", "~> 2.0"
 
-# Paperclip for file uploads
-gem "paperclip", "~> 4.1"
-
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem "sdoc", require: false
@@ -50,7 +47,6 @@ end
 gem "dotenv-rails", :groups => [:development, :test]
 
 group :production do
-  gem "pg"
   gem "rails_12factor"
   gem "puma"
 end
