@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe "messages routes" do
   it "routes slugs to messages#show" do

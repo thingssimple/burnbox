@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe "faq routes" do
   it "routes /faq to faq#index" do

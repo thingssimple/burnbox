@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "rails_helper"
 
 describe "messages/create" do
   let(:message) { Message.new text: "This is a test" }
