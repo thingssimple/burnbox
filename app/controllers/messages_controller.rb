@@ -1,6 +1,8 @@
 require "message_params"
 
 class MessagesController < ApplicationController
+  before_action :set_message, only: [:show, :download]
+
   def new
     @message = Message.new
   end
@@ -16,14 +18,12 @@ class MessagesController < ApplicationController
   end
 
   def show
-    @message = Message.find_by! slug: params[:slug]
     if @message.file_contents.nil?
       @message.destroy
     end
   end
 
   def download
-    @message = Message.find_by! slug: params[:slug]
     @message.destroy
     send_data(
       @message.read_file,
@@ -34,5 +34,9 @@ class MessagesController < ApplicationController
 
   def message_params
     MessageParams.generate(params.require(:message).permit(:text, :file))
+  end
+
+  def set_message
+    @message = Message.find(params[:id])
   end
 end

@@ -1,10 +1,9 @@
 require "rails_helper"
 
 describe "messages/show" do
-  let(:message) { Message.new(id: 1, text: "This is a test") }
+  let(:message) { Message.new(id: "1b0dad15-732e-45cc-8da4-749b4b21585d", text: "This is a test") }
 
   before do
-    message.set_slug
     assign :message, message
 
     render
@@ -23,10 +22,10 @@ describe "messages/show" do
   end
 
   context "when the message has a file" do
-    let(:message) { Message.new(id: 2, file_contents: "foo bar") }
+    let(:message) { Message.new(id: "1b0dad15-732e-45cc-8da4-749b4b21585d", file_contents: "foo bar") }
 
     it "inserts the meta tag if the message has a file" do
-      expect(view.content_for(:head)).to include(download_url(message.slug))
+      expect(view.content_for(:head)).to include(download_url(message))
     end
   end
 end

@@ -30,14 +30,14 @@ describe MessagesController do
   end
 
   describe "showing messages" do
-    let(:message) { Message.new(id: 1, text: "secret message") }
+    let(:message) { Message.new(text: "secret message") }
 
     before do
-      allow(Message).to receive(:find_by!).with(slug: "1") { message }
+      allow(Message).to receive(:find).with("1b0dad15-732e-45cc-8da4-749b4b21585d") { message }
     end
 
     it "shows an existing message" do
-      get :show, slug: "1"
+      get :show, id: "1b0dad15-732e-45cc-8da4-749b4b21585d"
 
       expect(assigns :message).to eq message
     end
@@ -46,30 +46,36 @@ describe MessagesController do
       allow(message).to receive(:file_contents) { nil }
       expect(message).to receive(:destroy)
 
-      get :show, slug: "1"
+      get :show, id: "1b0dad15-732e-45cc-8da4-749b4b21585d"
     end
 
     it "doesn't delete messages with files after rendering" do
       allow(message).to receive(:file_contents) { "foo" }
       expect(message).to_not receive(:destroy)
 
-      get :show, slug: "1"
+      get :show, id: "1b0dad15-732e-45cc-8da4-749b4b21585d"
     end
   end
 
   describe "downloading a file" do
-    let(:message) { Message.new(id: 1, file_contents: "c2VjcmV0IG1lc3NhZ2U=\n", file_extension: "txt", slug: "123") }
+    let(:message) do
+      Message.new(
+        id: "1b0dad15-732e-45cc-8da4-749b4b21585d",
+        file_contents: "c2VjcmV0IG1lc3NhZ2U=\n",
+        file_extension: "txt",
+      )
+    end
 
     before do
-      allow(Message).to receive(:find_by!).with(slug: "1") { message }
+      allow(Message).to receive(:find).with("1b0dad15-732e-45cc-8da4-749b4b21585d") { message }
     end
 
     it "sends a file" do
-      expect(controller).to receive(:send_data).with("secret message", type: "text/plain", filename: "123.txt")
+      expect(controller).to receive(:send_data).with("secret message", type: "text/plain", filename: "1b0dad15-732e-45cc-8da4-749b4b21585d.txt")
       expect(message).to receive(:destroy)
 
       # the view throws an error because we stub out send_file
-      expect{ get :download, slug: "1"}.to raise_error ActionView::MissingTemplate 
+      expect{ get :download, id: "1b0dad15-732e-45cc-8da4-749b4b21585d"}.to raise_error ActionView::MissingTemplate 
     end
   end
 end
