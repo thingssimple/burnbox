@@ -5,4 +5,4 @@ p.alert
 
 - unless @message.file_contents.nil?
   - content_for :head do
-    meta http-equiv="refresh" content="1;url=#{download_url(@message.slug)}"
+    meta http-equiv="refresh" content="1;url=#{download_url(@message)}"

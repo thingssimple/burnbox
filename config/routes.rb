@@ -3,8 +3,7 @@ BurnBox::Application.routes.draw do
 
   get "faq" => "faq#index"
 
-  get "messages/:slug" => "messages#show"
-  get "messages/:slug/download", to: "messages#download", as: "download"
+  get "messages/:id/download", to: "messages#download", as: "download"
   resources :messages
 
   # The priority is based upon order of creation: first created -> highest priority.

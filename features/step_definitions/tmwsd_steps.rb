@@ -18,7 +18,7 @@ When /^I create a message$/ do
 end
 
 When /^I go to that message's page$/ do
-  visit message_path @message.slug
+  visit message_path(@message)
 end
 
 Then /^I should see the message$/ do
@@ -26,10 +26,10 @@ Then /^I should see the message$/ do
 end
 
 Then /^I should see the file$/ do
-  url = download_url @message.slug
+  url = download_url(@message)
 
   expect(page.body).to include(url)
-  visit download_path(@message.slug)
+  visit url
 end
 
 Then /^the message should deleted$/ do
@@ -37,7 +37,7 @@ Then /^the message should deleted$/ do
 end
 
 Then /^I should see the message URL$/ do
-  expect(page).to have_field("link", with: message_url(Message.first.slug))
+  expect(page).to have_field("link", with: message_url(Message.first))
 end
 
 When /^I create a message with a file$/ do

@@ -1,15 +1,9 @@
 require "message_file"
 
 class Message < ActiveRecord::Base
-  before_save :set_slug
   before_save :set_file_contents, unless: Proc.new { |message| message.file_contents.nil? }
 
   validate :has_text_or_file?
-
-  def set_slug(salt=Time.now, content=rand)
-    self.slug = Digest::MD5.hexdigest("#{salt}:#{content}")
-    self
-  end
 
   def set_file_contents
     self.file_contents = MessageFile.encode(self.file_contents)
@@ -30,6 +24,6 @@ class Message < ActiveRecord::Base
   end
   
   def file_name
-    "#{slug}.#{file_extension}"
+    "#{id}.#{file_extension}"
   end
 end
