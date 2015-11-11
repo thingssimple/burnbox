@@ -3,3 +3,9 @@
 # BurnBox
 
 Anonymous, self-destructing message and file sharing.
+
+## API
+
+If you would like to create messages programmatically, you can do that:
+
+    $ curl --header "Accept: application/json" -F 'message[text]=check this out&message[file]=@/path/to/test.txt' https://burnboxapp.com/messages
