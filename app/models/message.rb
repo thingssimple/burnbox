@@ -1,22 +1,46 @@
+require "base64"
+require "ezcrypto"
 require "message_file"
 
 class Message < ActiveRecord::Base
-  before_save :set_file_contents, unless: Proc.new { |message| message.file_contents.nil? }
+  attr_reader :key
+
+  after_initialize :setup_crypto
+  before_save :encrypt_file_contents, unless: Proc.new { |message| message.file_contents.nil? }
+  before_save :encrypt_text, unless: Proc.new { |message| message.text.nil? || message.text.empty? || message.text.blank? }
 
   validate :has_text_or_file?
 
-  def set_file_contents
-    self.file_contents = MessageFile.encode(self.file_contents)
+  def setup_crypto
+    @key = (0...20).map { (65 + rand(26)).chr }.join
+  end
+
+  def crypto
+    EzCrypto::Key.with_password @key, "salt"
+  end
+
+  def encrypt_text
+    self.text = crypto.encrypt64 self.text
+  end
+
+  def decrypt_text key
+    @key = key
+    crypto.decrypt64 self.text
+  end
+
+  def encrypt_file_contents
+    self.file_contents = crypto.encrypt64 self.file_contents
+  end
+
+  def decrypt_file_contents key
+    @key = key
+    crypto.decrypt64 self.file_contents
   end
 
   def has_text_or_file?
     if [text, file_contents].all?{ |attr| attr.blank? }
       errors[:base] << "Either file or text are required"
     end
-  end
-
-  def read_file
-    MessageFile.decode(file_contents)
   end
 
   def file_mime_type

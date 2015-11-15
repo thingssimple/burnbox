@@ -9,7 +9,7 @@ class MessagesController < ApplicationController
   end
 
   def create
-    @message = Message.new(message_params)
+    @message = Message.new message_params
 
     if @message.save
       render :create
@@ -19,6 +19,7 @@ class MessagesController < ApplicationController
   end
 
   def show
+    @decrypted_text = @message.decrypt_text(params[:key])
     if @message.file_contents.nil?
       @message.destroy
     end
@@ -27,7 +28,7 @@ class MessagesController < ApplicationController
   def download
     @message.destroy
     send_data(
-      @message.read_file,
+      @message.decrypt_file_contents(params[:key]),
       type: @message.file_mime_type,
       filename: @message.file_name,
     )
