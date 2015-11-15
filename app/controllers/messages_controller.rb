@@ -19,28 +19,24 @@ class MessagesController < ApplicationController
   end
 
   def show
-    begin
-      @decrypted_text = @message.decrypt_text(params[:key])
-      if @message.file_contents.nil?
-        @message.destroy
-      end
-    rescue OpenSSL::Cipher::CipherError
-       raise "Could Not Decrypt"
+    @decrypted_text = @message.decrypt_text(params[:key])
+    if @message.file_contents.nil?
+      @message.destroy
     end
+  rescue OpenSSL::Cipher::CipherError
+    raise ActiveRecord::RecordNotFound
   end
 
   def download
-    begin
-      decrypted_file_contents = @message.decrypt_file_contents(params[:key])
-      @message.destroy
-      send_data(
-        decrypted_file_contents,
-        type: @message.file_mime_type,
-        filename: @message.file_name,
-      )
-    rescue OpenSSL::Cipher::CipherError
-       raise "Could Not Decrypt"
-    end
+    decrypted_file_contents = @message.decrypt_file_contents(params[:key])
+    @message.destroy
+    send_data(
+      decrypted_file_contents,
+      type: @message.file_mime_type,
+      filename: @message.file_name,
+    )
+  rescue OpenSSL::Cipher::CipherError
+    raise ActiveRecord::RecordNotFound
   end
 
   def set_message
