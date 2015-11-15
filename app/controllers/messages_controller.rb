@@ -1,7 +1,7 @@
+require "crypt"
 require "message_params"
 
 class MessagesController < ApplicationController
-  before_action :set_message, only: [:show, :download]
   skip_before_action :verify_authenticity_token, if: :json_request?
 
   def new
@@ -19,32 +19,32 @@ class MessagesController < ApplicationController
   end
 
   def show
-    @decrypted_text = @message.decrypt_text key_param
-    if @message.file_contents.nil?
-      @message.destroy
+    @crypt = Crypt.find params[:id], key_param
+    if @crypt.message.file_contents.nil?
+      @crypt.destroy
     end
-  rescue OpenSSL::Cipher::CipherError
+  rescue CryptError
     raise ActiveRecord::RecordNotFound
   end
 
   def download
-    decrypted_file_contents = @message.decrypt_file_contents key_param
-    @message.destroy
+    @crypt = Crypt.find params[:id], key_param
+    @crypt.destroy
     send_data(
-      decrypted_file_contents,
-      type: @message.file_mime_type,
-      filename: @message.file_name,
+      @crypt.file_contents,
+      type: @crypt.message.file_mime_type,
+      filename: @crypt.message.file_name,
     )
-  rescue OpenSSL::Cipher::CipherError
+  rescue CryptError
     raise ActiveRecord::RecordNotFound
-  end
-
-  def set_message
-    @message = Message.find(params[:id])
   end
 
   def json_request?
     request.format.json?
+  end
+
+  def id_param
+    params.permit(:id)
   end
 
   def key_param

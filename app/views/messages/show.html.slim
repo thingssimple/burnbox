@@ -1,8 +1,8 @@
 article
-  == markdown @decrypted_text
+  == markdown @crypt.text
 p.alert
   small This message has been deleted
 
-- unless @message.file_contents.nil?
+- unless @crypt.message.file_contents.nil?
   - content_for :head do
-    meta http-equiv="refresh" content="1;url=#{download_url(@message)}?key=#{@message.key}"
+    meta http-equiv="refresh" content="1;url=#{download_url(@crypt.message)}?key=#{@crypt.key}"
