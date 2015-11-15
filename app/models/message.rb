@@ -6,13 +6,13 @@ require "securerandom"
 class Message < ActiveRecord::Base
   attr_reader :key
 
-  after_initialize :setup_crypto
+  after_initialize :make_key
   before_save :encrypt_file_contents, unless: Proc.new { |message| message.file_contents.nil? }
   before_save :encrypt_text, unless: Proc.new { |message| message.text.blank? }
 
   validate :has_text_or_file?
 
-  def setup_crypto
+  def make_key
     @key = SecureRandom.hex 30
   end
 
@@ -24,18 +24,8 @@ class Message < ActiveRecord::Base
     self.text = crypto.encrypt64 self.text
   end
 
-  def decrypt_text key
-    @key = key
-    crypto.decrypt64 self.text
-  end
-
   def encrypt_file_contents
     self.file_contents = crypto.encrypt64 self.file_contents
-  end
-
-  def decrypt_file_contents key
-    @key = key
-    crypto.decrypt64 self.file_contents
   end
 
   def has_text_or_file?
