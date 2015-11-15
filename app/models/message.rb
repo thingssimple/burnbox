@@ -12,11 +12,12 @@ class Message < ActiveRecord::Base
   validate :has_text_or_file?
 
   def setup_crypto
-    @key = (0...20).map { (65 + rand(26)).chr }.join
+    chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ1234567890'
+    @key = (0...30).map { chars[rand(chars.length)].chr }.join
   end
 
   def crypto
-    EzCrypto::Key.with_password @key, "salt"
+    EzCrypto::Key.with_password @key, ENV['BB_SECRET']
   end
 
   def encrypt_text
