@@ -19,7 +19,7 @@ class MessagesController < ApplicationController
   end
 
   def show
-    @decrypted_text = @message.decrypt_text(params[:key])
+    @decrypted_text = @message.decrypt_text key_param
     if @message.file_contents.nil?
       @message.destroy
     end
@@ -28,7 +28,7 @@ class MessagesController < ApplicationController
   end
 
   def download
-    decrypted_file_contents = @message.decrypt_file_contents(params[:key])
+    decrypted_file_contents = @message.decrypt_file_contents key_param
     @message.destroy
     send_data(
       decrypted_file_contents,
@@ -45,6 +45,10 @@ class MessagesController < ApplicationController
 
   def json_request?
     request.format.json?
+  end
+
+  def key_param
+    params.require(:key)
   end
 
   def message_params
