@@ -43,10 +43,6 @@ class MessagesController < ApplicationController
     request.format.json?
   end
 
-  def id_param
-    params.permit(:id)
-  end
-
   def key_param
     params.require(:key)
   end
