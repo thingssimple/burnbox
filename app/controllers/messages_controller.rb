@@ -5,12 +5,12 @@ class MessagesController < ApplicationController
   skip_before_action :verify_authenticity_token, if: :json_request?
 
   def new
-    @crypt = Crypt.new Message.new
+    @message = Crypt.new Message.new
   end
 
   def create
-    @crypt = Crypt.new Message.new message_params
-    if @crypt.save
+    @message = Crypt.new Message.new message_params
+    if @message.save
       render :create
     else
       render :new
@@ -18,23 +18,23 @@ class MessagesController < ApplicationController
   end
 
   def show
-    @crypt = Crypt.find params[:id], key_param
-    @text  = @crypt.text # triggers CryptError, but used in view
-    unless @crypt.has_file?
-      @crypt.destroy
+    @message = Crypt.find params[:id], key_param
+    @message.text # triggers CryptError, but used in view
+    unless @message.has_file?
+      @message.destroy
     end
   rescue Crypt::CryptError
     raise ActiveRecord::RecordNotFound
   end
 
   def download
-    @crypt = Crypt.find params[:id], key_param
+    @message = Crypt.find params[:id], key_param
     send_data(
-      @crypt.file_contents,
-      type: @crypt.file_mime_type,
-      filename: @crypt.file_name,
+      @message.file_contents,
+      type: @message.file_mime_type,
+      filename: @message.file_name,
     )
-    @crypt.destroy
+    @message.destroy
   rescue Crypt::CryptError
     raise ActiveRecord::RecordNotFound
   end
