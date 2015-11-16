@@ -1,7 +1,7 @@
-- if @message.errors.any?
-  - @message.errors.full_messages.each do |msg|
+- if @crypt.errors.any?
+  - @crypt.errors.full_messages.each do |msg|
     p.error= msg
-= form_for @message, html: { role: "form", multipart: true } do |f|
+= form_for @crypt.message, html: { role: "form", multipart: true } do |f|
   #drop-zone
     span.icon.upload-icon
     .form-group= f.file_field :file

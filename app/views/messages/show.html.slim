@@ -3,6 +3,6 @@ article
 p.alert
   small This message has been deleted
 
-- unless @crypt.message.file_contents.nil?
+- if @crypt.has_file?
   - content_for :head do
-    meta http-equiv="refresh" content="1;url=#{download_url(@crypt.message)}?key=#{@crypt.key}"
+    meta http-equiv="refresh" content="1;url=#{download_url(@crypt.message, key: @crypt.key)}"

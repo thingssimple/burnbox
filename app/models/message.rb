@@ -1,32 +1,5 @@
-require "base64"
-require "ezcrypto"
-require "message_file"
-require "securerandom"
-
 class Message < ActiveRecord::Base
-  attr_reader :key
-
-  after_initialize :make_key
-  before_save :encrypt_file_contents, unless: Proc.new { |message| message.file_contents.nil? }
-  before_save :encrypt_text, unless: Proc.new { |message| message.text.blank? }
-
   validate :has_text_or_file?
-
-  def make_key
-    @key = SecureRandom.hex 30
-  end
-
-  def crypto
-    EzCrypto::Key.with_password @key, ENV['BB_SECRET']
-  end
-
-  def encrypt_text
-    self.text = crypto.encrypt64 self.text
-  end
-
-  def encrypt_file_contents
-    self.file_contents = crypto.encrypt64 self.file_contents
-  end
 
   def has_text_or_file?
     if [text, file_contents].all?{ |attr| attr.blank? }

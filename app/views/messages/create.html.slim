@@ -1,4 +1,4 @@
-input id="link" name="link" type="text" value="#{message_url(@message)}?key=#{@message.key}" readonly=true
+input id="link" name="link" type="text" value="#{message_url(@crypt.message, key: @crypt.key)}" readonly=true
 
 coffee:
   elem = document.getElementById "link"
