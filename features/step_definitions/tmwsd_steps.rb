@@ -2,13 +2,16 @@ Given(/^I am on the homepage$/) do
   visit "/"
 end
 
-Given(/^a message$/) do
-  @message = Message.create text: "This is a test message"
-  @message_text = @message.text
+Given(/^I created a message$/) do
+  step "I am on the homepage"
+  step "I create a message"
+  @message_url_with_key = find_field("link").value
 end
 
-Given(/^a message with a file$/) do
-  @message = Message.create! file_contents: "some test", file_extension: "txt"
+Given(/^I created a message with a file$/) do
+  step "I am on the homepage"
+  step "I create a message with a file"
+  @message_url_with_key = find_field("link").value
 end
 
 When(/^I create a message$/) do
@@ -18,7 +21,7 @@ When(/^I create a message$/) do
 end
 
 When(/^I go to that message's page$/) do
-  visit message_path(@message)
+  visit @message_url_with_key
 end
 
 Then(/^I should see the message$/) do
@@ -26,18 +29,21 @@ Then(/^I should see the message$/) do
 end
 
 Then(/^I should see the file$/) do
-  url = download_url(@message)
+  uri = URI(@message_url_with_key)
+  key = uri.query.split("=").last
+  url = download_url(Message.first, key: key)
 
   expect(page.body).to include(url)
   visit url
 end
 
 Then(/^the message should deleted$/) do
-  expect(Message.where(id: @message.id)).to be_empty
+  expect(Message.all).to be_empty
 end
 
 Then(/^I should see the message URL$/) do
-  expect(page).to have_field("link", with: message_url(Message.first))
+  message_url_with_key = find_field("link").value
+  expect(message_url_with_key).to include(message_url(Message.first, key: ""))
 end
 
 When(/^I create a message with a file$/) do
