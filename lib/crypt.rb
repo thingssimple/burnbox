@@ -4,7 +4,7 @@ class Crypt
   attr_reader :message, :key
 
   def initialize(message, key=SecureRandom.hex(30))
-    @crypto  = EzCrypto::Key.with_password key, ENV['BB_SECRET']
+    @crypto  = EzCrypto::Key.with_password key, ENV['BB_SECRET'], algorithm: "aes256"
     @key     = key
     @message = message
   end
@@ -31,12 +31,18 @@ class Crypt
     raise CryptError
   end
 
-  def file_mime_type
-    @message.file_mime_type
+  def file_extension
+    @crypto.decrypt64 @message.file_extension
+  rescue OpenSSL::Cipher::CipherError
+    raise CryptError
   end
 
   def file_name
-    @message.file_name
+    "#{@message.id}.#{file_extension}"
+  end
+
+  def file_mime_type
+    Mime::Type.lookup_by_extension(file_extension).to_s
   end
 
   # Active Record API
@@ -51,7 +57,8 @@ class Crypt
 
   def save
     if has_file?
-      @message.file_contents = @crypto.encrypt64 @message.file_contents
+      @message.file_contents  = @crypto.encrypt64 @message.file_contents
+      @message.file_extension = @crypto.encrypt64 @message.file_extension
     end
     if has_text?
       @message.text = @crypto.encrypt64 @message.text

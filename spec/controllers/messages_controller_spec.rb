@@ -77,6 +77,7 @@ describe MessagesController do
     before do
       allow(Crypt).to receive(:find).with(guid, key) { crypt }
       allow(crypt).to receive(:file_contents) { "secret message" }
+      allow(crypt).to receive(:file_extension) { "txt" }
     end
 
     it "sends a file" do
