@@ -3,7 +3,7 @@ require "securerandom"
 class Crypt
   attr_reader :message, :key
 
-  def initialize(message, key=SecureRandom.hex(30))
+  def initialize(message, key=SecureRandom.urlsafe_base64(30))
     @crypto  = EzCrypto::Key.with_password key, ENV['BB_SECRET'], algorithm: "aes256"
     @key     = key
     @message = message
