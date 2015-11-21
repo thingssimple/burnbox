@@ -4,7 +4,7 @@ class Crypt
   attr_reader :message, :key
 
   def initialize(message, key=SecureRandom.hex(30))
-    @crypto  = EzCrypto::Key.with_password key, ENV['BB_SECRET'], :algorithm=>"aes256"
+    @crypto  = EzCrypto::Key.with_password key, ENV['BB_SECRET'], algorithm: "aes256"
     @key     = key
     @message = message
   end
