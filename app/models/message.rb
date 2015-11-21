@@ -6,12 +6,4 @@ class Message < ActiveRecord::Base
       errors[:base] << "Either file or text are required"
     end
   end
-
-  def file_mime_type
-    Mime::Type.lookup_by_extension(file_extension).to_s
-  end
-  
-  def file_name
-    "#{id}.#{file_extension}"
-  end
 end
