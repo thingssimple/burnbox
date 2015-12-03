@@ -18,7 +18,7 @@ ActiveRecord::Schema.define(version: 20151110012641) do
   enable_extension "plpgsql"
 
   create_table "messages", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
-    t.string "text",           limit: 255
+    t.text "text"
     t.text   "file_contents"
     t.string "file_extension"
   end
