@@ -60,6 +60,14 @@ describe MessagesController do
 
       get :show, id: guid, key: key
     end
+
+    it "returns a 404 for link expanding user agents" do
+      request.env["HTTP_USER_AGENT"] = "Slackbot-LinkExpanding 1.0 (+https://api.slack.com/robots)"
+      allow(message).to receive(:file_contents) { nil }
+      expect(crypt).to_not receive(:destroy)
+
+      expect{get :show, id: guid, key: key}.to raise_error ActiveRecord::RecordNotFound
+    end
   end
 
   describe "downloading a file" do
