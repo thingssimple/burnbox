@@ -18,7 +18,8 @@ class MessagesController < ApplicationController
   end
 
   def show
-    logger.info "User agent: #{request.user_agent}"
+    user_agent = UserAgent.parse(request.user_agent)
+    logger.info "User agent: #{user_agent.platform}"
     @message = Crypt.find params[:id], key_param
     @message.text # triggers CryptError, but used in view
     unless @message.has_file?
