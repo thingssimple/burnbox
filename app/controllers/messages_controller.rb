@@ -18,6 +18,10 @@ class MessagesController < ApplicationController
   end
 
   def show
+    if is_link_expander?
+      raise ActiveRecord::RecordNotFound
+    end
+
     @message = Crypt.find params[:id], key_param
     @message.text # triggers CryptError, but used in view
     unless @message.has_file?
